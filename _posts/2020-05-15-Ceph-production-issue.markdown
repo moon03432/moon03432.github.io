@@ -8,7 +8,7 @@ Ceph 集群版本: v15.2.1 Octopus
 Ceph 安装方式: cephadm  
 Ceph 集群规模: 4  
 
-由于需要重启的时候加载Ceph RBD，所以改动了`/etc/fstab`，结果重启之后机器无法启动。因为Ceph集群是通过`systemd`启动的，而加载`/etc/fstab`在启动`systemd`之前。经过查询应该用[rbdmap][rbdmap]服务的方式实现开启加载Ceph RBD。
+由于需要重启的时候加载Ceph RBD，所以改动了`/etc/fstab`，结果重启之后机器无法启动。经过查询应该用[rbdmap][rbdmap]服务的方式实现开启加载Ceph RBD。注意 `/etc/fstab` 中的选项需要是 `noauto`，这样开机的时候不会被挂载，启动 rbdmap 服务的时候才会被挂载，确保安全。
 
 好了，Ceph主节点挂了，赶快看一下Ceph集群是否有影响。Ceph Dashboard会在备用的节点启动，Dashboard页面是这样的：
 ![](/img/ceph-dashboard-error.png)
