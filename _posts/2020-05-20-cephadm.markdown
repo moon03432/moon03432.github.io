@@ -1,0 +1,60 @@
+---
+layout: post
+title:  "cephadm"
+date:   2020-05-20 13:00:00 +0800
+categories: ceph cephadm
+---
+Ceph 集群版本: v15.2.1 Octopus  
+
+cephadm 是 v15.2.0 新出的集群安装方式，取代了原先的 ceph-deploy。 除了 cephadm, 官网还提了另一种集群安装方式 Rook，是在 Kubernetes 上搭建 Ceph 集群。初步调研一下感觉还不是很稳定。而 cephadm 是 Python 脚本，通过 systemd 来管理 docker (或者podman, RedHat推出的容器管理工具，去掉了docker中的一些不需要的组件) 。
+
+cephadm还是比较简单的，记录一下用到的一些命令：
+
+```sh
+cephadm bootstrap --mon-ip <ip>    # bootstrap a local ceph cluster via systemd
+
+cephadm add-repo --release octopus
+cephadm install cephadm ceph-common
+
+cephadm ls           # list local ceph services
+cephadm rm-cluster --fsid <fsid> --force	# remove installed Ceph cluster
+cephadm shell        # start a new container containing all ceph components
+```
+
+另外 systemd 管理 Ceph 集群容器也有一些值得注意的点。通过 cephadm 安装好 ceph 集群之后，在 /etc/systemd/system 下生成以下文件：
+
+```sh
+[root@localhost system]# ll
+-rw-r--r--  1 root root  157 May 19 14:04 ceph-16969536-9349-11ea-9bdd-9440c927b7c8.target
+drwxr-xr-x  2 root root 4096 May 19 14:04 ceph-16969536-9349-11ea-9bdd-9440c927b7c8.target.wants
+-rw-r--r--  1 root root 1205 May 19 14:04 ceph-16969536-9349-11ea-9bdd-9440c927b7c8@.service
+-rw-r--r--  1 root root   88 May 19 14:04 ceph.target
+drwxr-xr-x  2 root root   88 May 18 12:00 ceph.target.wants
+drwxr-xr-x  2 root root   27 May 19 14:02 docker.service.d
+drwxr-xr-x. 2 root root 4096 May 20 14:22 multi-user.target.wants
+-rw-r--r--  1 root root  125 May 20 13:51 node_exporter.service
+```
+
+注意 ceph-<fsid>@.service这个文件，这是一个模版，可以通过这个模版启动多个服务，用 systemctl -t service 可以查看所有服务：
+
+```sh
+[root@localhost system]# systemctl -t service | grep ceph
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@alertmanager.shoyb18plpcdp161.service          loaded active running Ceph alertmanager.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@crash.shoyb18plpcdp161.service                 loaded active running Ceph crash.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@grafana.shoyb18plpcdp161.service               loaded active running Ceph grafana.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mgr.shoyb18plpcdp161.mcd.com.cn.immwmu.service loaded active running Ceph mgr.shoyb18plpcdp161.mcd.com.cn.immwmu for 16969536-9349-11ea-9bdd-9440c927b7c8
+● ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mgr.shoyb18plpcdp161.mcd.com.cn.service        loaded failed failed  Ceph mgr.shoyb18plpcdp161.mcd.com.cn for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mon.shoyb18plpcdp161.mcd.com.cn.service        loaded active running Ceph mon.shoyb18plpcdp161.mcd.com.cn for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@node-exporter.shoyb18plpcdp161.service         loaded active running Ceph node-exporter.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@osd.0.service                                  loaded active running Ceph osd.0 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@osd.1.service                                  loaded active running Ceph osd.1 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@osd.2.service                                  loaded active running Ceph osd.2 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-16969536-9349-11ea-9bdd-9440c927b7c8@prometheus.shoyb18plpcdp161.service            loaded active running Ceph prometheus.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
+  ceph-crash.service                                                                       loaded active running Ceph crash dump collector
+```
+
+也可以通过 systemctl stop <service> 来手动管理某个服务。
+
+[cephadm]: https://docs.ceph.com/docs/master/cephadm/
+[ cephadm source code]: https://github.com/ceph/ceph/blob/master/src/cephadm/cephadm
+
