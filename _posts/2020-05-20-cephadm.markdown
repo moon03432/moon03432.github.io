@@ -43,7 +43,6 @@ drwxr-xr-x. 2 root root 4096 May 20 14:22 multi-user.target.wants
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@crash.shoyb18plpcdp161.service                 loaded active running Ceph crash.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@grafana.shoyb18plpcdp161.service               loaded active running Ceph grafana.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mgr.shoyb18plpcdp161.mcd.com.cn.immwmu.service loaded active running Ceph mgr.shoyb18plpcdp161.mcd.com.cn.immwmu for 16969536-9349-11ea-9bdd-9440c927b7c8
-● ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mgr.shoyb18plpcdp161.mcd.com.cn.service        loaded failed failed  Ceph mgr.shoyb18plpcdp161.mcd.com.cn for 16969536-9349-11ea-9bdd-9440c927b7c8
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@mon.shoyb18plpcdp161.mcd.com.cn.service        loaded active running Ceph mon.shoyb18plpcdp161.mcd.com.cn for 16969536-9349-11ea-9bdd-9440c927b7c8
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@node-exporter.shoyb18plpcdp161.service         loaded active running Ceph node-exporter.shoyb18plpcdp161 for 16969536-9349-11ea-9bdd-9440c927b7c8
   ceph-16969536-9349-11ea-9bdd-9440c927b7c8@osd.0.service                                  loaded active running Ceph osd.0 for 16969536-9349-11ea-9bdd-9440c927b7c8
@@ -55,6 +54,10 @@ drwxr-xr-x. 2 root root 4096 May 20 14:22 multi-user.target.wants
 
 也可以通过 systemctl stop <service> 来手动管理某个服务。
 
-[cephadm]: https://docs.ceph.com/docs/master/cephadm/
-[ cephadm source code]: https://github.com/ceph/ceph/blob/master/src/cephadm/cephadm
+
+
+#### 相关资料：
+
+[cephadm](https://docs.ceph.com/docs/master/cephadm/)  
+[cephadm source](https://github.com/ceph/ceph/blob/master/src/cephadm/cephadm)
 
