@@ -108,7 +108,8 @@ kubectl exec kube-proxy-ts54q -n kube-system -- iptables -t nat -S | grep 192.16
 
 ### 总结
 
-本文详细分析了 Kubernetes Service 在 iptables 模式下的转发路径。网上分析 Service 的文章有很多，但检查到每一条 iptables rule 的很少。终于了结了我心中的一大困惑。
+在 kube-proxy iptables 模式下，Service 的本质就是 kube-proxy 容器中的一段引向 Pod IP 的 iptable rules。  ClusterIP Service 的 iptables 路径是 Service ClusterIP => Pod IP  
+NodePort Service 的 iptables 路径是 host:NodePort => kube-proxy:NodePort => Service ClusterIP => Pod IP
 
 
 
