@@ -1,14 +1,12 @@
 ---
 layout: post
-title:  "xxx does not implement xxx (xxx method has pointer receiver)"
+title:  "Golang: xxx does not implement xxx (xxx method has pointer receiver)"
 date:   2020-07-02 13:00:00 +0800
 categories: Go interface
 ---
 在开始使用 Go interface 的时候，会遇到 “xxx does not implement xxx (xxx method has pointer receiver)” 这样一个问题，我们先来看一下代码：
 
 ```go
-package main
-
 import "fmt"
 
 type service interface {
